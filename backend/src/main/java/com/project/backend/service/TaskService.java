@@ -3,6 +3,7 @@ package com.project.backend.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,8 +25,12 @@ public class TaskService {
         this.taskMapper = taskMapper;
     }
 
-    public List<TaskResponse> getAllTasks() {
-        List<Task> tasks = taskRepository.findAll();
+    public List<TaskResponse> findAll(String sortBy, String sortDir) {
+        String sortProperty = getSortProperty(sortBy);
+        Sort.Direction sortDirection = getSortDirection(sortDir);
+
+        Sort sort = Sort.by(sortDirection, sortProperty);
+        List<Task> tasks = taskRepository.findAll(sort);
 
         List<TaskResponse> responses = new ArrayList<>();
         for (Task task : tasks) {
@@ -70,6 +75,40 @@ public class TaskService {
         }
 
         return task;
+    }
+
+    private String getSortProperty(String sortBy) {
+        if (sortBy == null) {
+            return "createdAt";
+        }
+
+        switch (sortBy) {
+            case "createdAt":
+            case "title":
+            case "priority":
+            case "status":
+                return sortBy;
+            default:
+                throw new IllegalArgumentException(
+                        "Tri invalide : '" + sortBy + "'. Valeurs autorisées : createdAt, title, priority, status");
+        }
+    }
+
+    private Sort.Direction getSortDirection(String sortDir) {
+        if (sortDir == null) {
+            return Sort.Direction.DESC;
+        }
+
+        if (sortDir.equals("asc")) {
+            return Sort.Direction.ASC;
+        }
+
+        if (sortDir.equals("desc")) {
+            return Sort.Direction.DESC;
+        }
+
+        throw new IllegalArgumentException(
+                "Direction de tri invalide : '" + sortDir + "'. Valeurs autorisées : asc, desc");
     }
 
 }
