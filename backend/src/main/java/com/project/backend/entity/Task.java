@@ -10,8 +10,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "task")
@@ -21,12 +19,9 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Le titre est obligatoire")
-    @Size(max = 100, message = "Le titre ne doit pas dépasser 100 caractères")
     @Column(name = "title", nullable = false, length = 100)
     private String title;
 
-    @Size(max = 500, message = "La description ne doit pas dépasser 500 caractères")
     @Column(name = "description", length = 500)
     private String description;
 
