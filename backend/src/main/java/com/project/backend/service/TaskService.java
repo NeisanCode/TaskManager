@@ -10,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.project.backend.dto.TaskRequest;
 import com.project.backend.dto.TaskResponse;
 import com.project.backend.entity.Task;
+import com.project.backend.entity.TaskPriority;
+import com.project.backend.entity.TaskStatus;
 import com.project.backend.exception.TaskNotFoundException;
 import com.project.backend.mapper.TaskMapper;
 import com.project.backend.repository.TaskRepository;
@@ -25,12 +27,14 @@ public class TaskService {
         this.taskMapper = taskMapper;
     }
 
-    public List<TaskResponse> findAll(String sortBy, String sortDir) {
+    public List<TaskResponse> findAll(String search, TaskStatus status, TaskPriority priority, String sortBy,
+            String sortDir) {
+        String searchKeyword = getSearchKeyword(search);
         String sortProperty = getSortProperty(sortBy);
         Sort.Direction sortDirection = getSortDirection(sortDir);
 
         Sort sort = Sort.by(sortDirection, sortProperty);
-        List<Task> tasks = taskRepository.findAll(sort);
+        List<Task> tasks = taskRepository.findAllFiltered(searchKeyword, status, priority, sort);
 
         List<TaskResponse> responses = new ArrayList<>();
         for (Task task : tasks) {
@@ -75,6 +79,16 @@ public class TaskService {
         }
 
         return task;
+    }
+
+    private String getSearchKeyword(String search) {
+        // The search is never null: Hibernate cannot guess the SQL type of a null
+        // string parameter, and an empty keyword simply matches every title.
+        if (search == null || search.isBlank()) {
+            return "";
+        }
+
+        return search.trim();
     }
 
     private String getSortProperty(String sortBy) {

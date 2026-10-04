@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.project.backend.dto.TaskRequest;
 import com.project.backend.dto.TaskResponse;
+import com.project.backend.entity.TaskPriority;
+import com.project.backend.entity.TaskStatus;
 import com.project.backend.service.TaskService;
 
 import jakarta.validation.Valid;
@@ -34,9 +36,12 @@ public class TaskController {
 
     @GetMapping
     public List<TaskResponse> getAllTasks(
+            @RequestParam(name = "search", required = false) String search,
+            @RequestParam(name = "status", required = false) TaskStatus status,
+            @RequestParam(name = "priority", required = false) TaskPriority priority,
             @RequestParam(name = "sortBy", defaultValue = "createdAt") String sortBy,
             @RequestParam(name = "sortDir", defaultValue = "desc") String sortDir) {
-        return taskService.findAll(sortBy, sortDir);
+        return taskService.findAll(search, status, priority, sortBy, sortDir);
     }
 
     @GetMapping("/{id}")
