@@ -1,0 +1,112 @@
+<!-- Overlay : fond assombri et flouté, clic outside = annuler -->
+<div class="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-slate-900/40 p-4 backdrop-blur-sm dark:bg-black/70 sm:items-center sm:p-6"
+     role="dialog"
+     aria-modal="true"
+     [attr.aria-labelledby]="'task-form-title'"
+     (click)="onCancel()">
+
+<form class="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl dark:border-slate-700 dark:bg-slate-900"
+      [formGroup]="form"
+      (ngSubmit)="onSubmit()"
+      (click)="$event.stopPropagation()">
+
+  <h2 id="task-form-title" class="mb-6 text-lg font-semibold text-slate-900 dark:text-slate-50">
+    {{ isEditMode() ? 'Modifier la tâche' : 'Nouvelle tâche' }}
+  </h2>
+
+  <!-- Titre -->
+  <div class="mb-4">
+    <label for="title" class="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">Titre</label>
+    <input
+      id="title"
+      type="text"
+      formControlName="title"
+      maxlength="100"
+      placeholder="Ex. Relire les bases Spring Boot"
+      class="w-full rounded-xl border bg-white px-3 py-2 text-sm text-slate-900 transition placeholder:text-slate-400 focus:border-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-900 dark:bg-slate-950 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:border-slate-400 dark:focus:ring-slate-400"
+      [class]="fieldBorderClass('title')" />
+
+    @if (isInvalid('title') && form.get('title')?.hasError('required')) {
+      <p class="mt-1 text-xs text-rose-600 dark:text-rose-400">Le titre est obligatoire</p>
+    }
+    @if (isInvalid('title') && form.get('title')?.hasError('maxlength')) {
+      <p class="mt-1 text-xs text-rose-600 dark:text-rose-400">Le titre ne doit pas dépasser 100 caractères</p>
+    }
+  </div>
+
+  <!-- Description -->
+  <div class="mb-4">
+    <label for="description" class="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">Description</label>
+    <textarea
+      id="description"
+      formControlName="description"
+      rows="3"
+      maxlength="500"
+      placeholder="Détails de la tâche (optionnel)"
+      class="w-full resize-none rounded-xl border px-3 py-2 text-sm text-slate-900 transition placeholder:text-slate-400 focus:border-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-900"
+      [class]="fieldBorderClass('description')"></textarea>
+
+    @if (isInvalid('description') && form.get('description')?.hasError('maxlength')) {
+      <p class="mt-1 text-xs text-rose-600 dark:text-rose-400">La description ne doit pas dépasser 500 caractères</p>
+    }
+  </div>
+
+  <!-- Statut + Priorité -->
+  <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+    <div>
+      <label for="status" class="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">Statut</label>
+      <select
+        id="status"
+        formControlName="status"
+        class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 transition focus:border-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-900 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:focus:border-slate-400 dark:focus:ring-slate-400">
+        <option value="TODO">À faire</option>
+        <option value="IN_PROGRESS">En cours</option>
+        <option value="DONE">Terminé</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="priority" class="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">Priorité</label>
+      <select
+        id="priority"
+        formControlName="priority"
+        class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 transition focus:border-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-900 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:focus:border-slate-400 dark:focus:ring-slate-400">
+        <option value="LOW">Basse</option>
+        <option value="MEDIUM">Moyenne</option>
+        <option value="HIGH">Haute</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Erreur API -->
+  @if (errorMessage()) {
+    <div class="mt-4 flex items-start gap-2 rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 dark:border-rose-900 dark:bg-rose-950/40">
+      <svg class="mt-0.5 h-4 w-4 shrink-0 text-rose-500" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="9" />
+        <path d="M12 8v4.5M12 16h.01" />
+      </svg>
+      <p class="text-xs text-rose-700 dark:text-rose-300">{{ errorMessage() }}</p>
+    </div>
+  }
+
+  <!-- Actions -->
+  <div class="mt-6 flex justify-end gap-3">
+    <button
+      type="button"
+      (click)="onCancel()"
+      class="rounded-xl border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-300 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800">
+      Annuler
+    </button>
+
+    <button
+      type="submit"
+      [disabled]="form.invalid || submitting()"
+      class="rounded-xl bg-slate-900 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-white dark:focus-visible:outline-slate-100">
+      {{ submitting() ? 'Enregistrement...' : 'Enregistrer' }}
+    </button>
+  </div>
+
+</form>
+
+</div>

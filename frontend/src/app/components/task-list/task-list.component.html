@@ -1,0 +1,406 @@
+<!-- Page -->
+<<<<<<< Updated upstream
+<div class="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100">
+  <div class="mx-auto max-w-5xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
+=======
+<div class="flex h-dvh flex-col overflow-hidden bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900">
+  <div class="mx-auto flex w-full max-w-5xl flex-1 flex-col px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
+
+    <!-- Form (create / edit) -->
+    @if (showForm()) {
+      <app-task-form
+        [task]="selectedTask()"
+        (saved)="onSaved()"
+        (cancelled)="closeForm()" />
+    }
+>>>>>>> Stashed changes
+
+    <!-- Header -->
+    <header class="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+      <div>
+        <h1 class="text-4xl font-semibold tracking-tight text-slate-900 dark:text-slate-50">Mes tâches</h1>
+        <p class="mt-2 text-sm text-slate-500 sm:text-base dark:text-slate-400">
+          Gérez vos tâches simplement et efficacement
+        </p>
+      </div>
+
+<<<<<<< Updated upstream
+      <button
+        type="button"
+        class="inline-flex shrink-0 items-center gap-2 self-start rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition duration-200 hover:scale-[1.02] hover:bg-slate-800 hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900 active:scale-100">
+        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 5v14M5 12h14" />
+        </svg>
+        Nouvelle tâche
+      </button>
+    </header>
+
+    <!-- Filters (visual only, not wired yet) -->
+    <div class="mt-8 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm sm:p-4">
+=======
+      <div class="flex shrink-0 items-center gap-2">
+        <button
+          type="button"
+          (click)="themeService.toggleTheme()"
+          [attr.aria-label]="themeService.isDark() ? 'Activer le thème clair' : 'Activer le thème sombre'"
+          class="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white p-2.5 text-slate-600 transition hover:bg-slate-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-400 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800">
+          @if (themeService.isDark()) {
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="4" />
+              <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
+            </svg>
+          }
+          @else {
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" />
+            </svg>
+          }
+        </button>
+
+        <button
+          type="button"
+          (click)="openCreateForm()"
+          class="inline-flex shrink-0 items-center gap-2 rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition duration-200 hover:scale-[1.02] hover:bg-slate-800 hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900 active:scale-100 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-white dark:focus-visible:outline-slate-100">
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 5v14M5 12h14" />
+          </svg>
+          Nouvelle tâche
+        </button>
+      </div>
+    </header>
+
+    <!-- Filters (visual only, not wired yet) -->
+    <div class="mt-8 shrink-0 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm sm:p-4 dark:border-slate-800 dark:bg-slate-900">
+>>>>>>> Stashed changes
+      <div class="flex flex-col gap-3 lg:flex-row lg:items-center">
+
+        <!-- Search -->
+        <div class="relative flex-1">
+          <svg class="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
+               viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="7" />
+            <path d="m20 20-3.5-3.5" />
+          </svg>
+          <input
+            type="text"
+            placeholder="Rechercher une tâche..."
+            aria-label="Rechercher une tâche"
+            class="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-4 text-sm text-slate-900 placeholder:text-slate-400 transition focus:border-slate-300 focus:bg-white focus:outline-none focus:ring-4 focus:ring-slate-900/5 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:border-slate-600 dark:focus:bg-slate-900" />
+        </div>
+
+        <!-- Selects -->
+        <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:w-auto lg:shrink-0">
+
+          <div class="relative">
+            <select
+              aria-label="Filtrer par statut"
+<<<<<<< Updated upstream
+              class="w-full appearance-none rounded-xl border border-slate-200 bg-slate-50 py-2.5 pl-4 pr-10 text-sm text-slate-700 transition hover:border-slate-300 focus:border-slate-300 focus:bg-white focus:outline-none focus:ring-4 focus:ring-slate-900/5 lg:w-44">
+              <option selected>Tous les statuts</option>
+              <option>À faire</option>
+              <option>En cours</option>
+              <option>Terminé</option>
+=======
+              class="w-full appearance-none rounded-xl border border-slate-200 bg-slate-50 py-2.5 pl-4 pr-10 text-sm text-slate-700 transition hover:border-slate-300 focus:border-slate-300 focus:bg-white focus:outline-none focus:ring-4 focus:ring-slate-900/5 lg:w-48 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200 dark:hover:border-slate-600 dark:focus:border-slate-600 dark:focus:bg-slate-900">
+              <option value="">Tous les statuts</option>
+              <option value="TODO">À faire</option>
+              <option value="IN_PROGRESS">En cours</option>
+              <option value="DONE">Terminé</option>
+>>>>>>> Stashed changes
+            </select>
+            <svg class="pointer-events-none absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
+                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </div>
+
+          <div class="relative">
+            <select
+              aria-label="Filtrer par priorité"
+<<<<<<< Updated upstream
+              class="w-full appearance-none rounded-xl border border-slate-200 bg-slate-50 py-2.5 pl-4 pr-10 text-sm text-slate-700 transition hover:border-slate-300 focus:border-slate-300 focus:bg-white focus:outline-none focus:ring-4 focus:ring-slate-900/5 lg:w-44">
+              <option selected>Toutes les priorités</option>
+              <option>Basse</option>
+              <option>Moyenne</option>
+              <option>Haute</option>
+=======
+              class="w-full appearance-none rounded-xl border border-slate-200 bg-slate-50 py-2.5 pl-4 pr-10 text-sm text-slate-700 transition hover:border-slate-300 focus:border-slate-300 focus:bg-white focus:outline-none focus:ring-4 focus:ring-slate-900/5 lg:w-48 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200 dark:hover:border-slate-600 dark:focus:border-slate-600 dark:focus:bg-slate-900">
+              <option value="">Toutes les priorités</option>
+              <option value="LOW">Basse</option>
+              <option value="MEDIUM">Moyenne</option>
+              <option value="HIGH">Haute</option>
+>>>>>>> Stashed changes
+            </select>
+            <svg class="pointer-events-none absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
+                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </div>
+
+        </div>
+      </div>
+<<<<<<< Updated upstream
+    </div>
+
+=======
+
+      <!-- Tri + résumé -->
+      <div class="mt-3 flex flex-col gap-3 border-t border-slate-100 pt-3 sm:flex-row sm:items-center sm:justify-between dark:border-slate-800">
+
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+
+          <div class="relative">
+            <label for="sortBy" class="sr-only">Trier par</label>
+            <select
+              #sortBySelect
+              [value]="sortField()"
+              (change)="onSortFieldChange(sortBySelect.value)"
+              class="w-full appearance-none rounded-xl border border-slate-200 bg-slate-50 py-2 pl-3 pr-9 text-sm text-slate-700 transition hover:border-slate-300 focus:border-slate-300 focus:bg-white focus:outline-none focus:ring-4 focus:ring-slate-900/5 sm:w-48 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200 dark:hover:border-slate-600 dark:focus:border-slate-600 dark:focus:bg-slate-900">
+              <option value="createdAt">Date de création</option>
+              <option value="title">Titre</option>
+              <option value="priority">Priorité</option>
+              <option value="status">Statut</option>
+            </select>
+            <svg class="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
+                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </div>
+
+          <button
+            type="button"
+            (click)="toggleSortDirection()"
+            [attr.aria-label]="'Trier par ordre ' + (sortDirection() === 'asc' ? 'décroissant' : 'croissant')"
+            class="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-400 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">
+            <svg class="h-4 w-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              @if (sortDirection() === 'asc') {
+                <path d="M12 19V5M5 12l7-7 7 7" />
+              }
+              @else {
+                <path d="M12 5v14M5 12l7 7 7-7" />
+              }
+            </svg>
+            {{ sortDirection() === 'asc' ? 'Croissant' : 'Décroissant' }}
+          </button>
+
+        </div>
+
+        <div class="flex items-center justify-between gap-3 sm:justify-end">
+          <p class="min-w-[7rem] text-xs tabular-nums text-slate-400 dark:text-slate-500">
+            @if (loading()) {
+              Chargement...
+            }
+            @else {
+              {{ tasks().length }} tâche{{ tasks().length > 1 ? 's' : '' }}
+            }
+          </p>
+
+          <!-- Toujours rendu : `invisible` garde la place, donc la ligne
+               ne se décale pas quand le bouton apparaît ou disparaît. -->
+          <button
+            type="button"
+            (click)="clearFilters()"
+            [class.invisible]="!hasActiveFilters()"
+            [attr.aria-hidden]="!hasActiveFilters()"
+            [attr.tabindex]="hasActiveFilters() ? null : -1"
+            class="inline-flex items-center gap-1.5 rounded-lg px-2 py-1 text-xs font-medium text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-slate-400 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100">
+            <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M18 6 6 18M6 6l12 12" />
+            </svg>
+            Réinitialiser
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Results: fills the free space, so the page never collapses -->
+    <div class="flex flex-1 flex-col overflow-y-auto [scrollbar-gutter:stable]">
+
+>>>>>>> Stashed changes
+    <!-- Loading: skeleton cards -->
+    @if (loading()) {
+      <div class="mt-6 space-y-3" role="status" aria-label="Chargement des tâches">
+        @for (skeleton of [1, 2, 3]; track skeleton) {
+          <div class="h-20 animate-pulse rounded-2xl border border-slate-200 bg-slate-200/60 dark:border-slate-800 dark:bg-slate-800/60"></div>
+        }
+      </div>
+    }
+
+    <!-- Error -->
+    @else if (errorMessage()) {
+      <div class="mt-6 flex items-start gap-4 rounded-2xl border border-rose-200 bg-rose-50 p-5 dark:border-rose-900 dark:bg-rose-950/40">
+        <svg class="h-5 w-5 shrink-0 text-rose-500" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" />
+          <path d="M12 8v4.5M12 16h.01" />
+        </svg>
+        <div>
+          <p class="text-sm font-medium text-rose-900 dark:text-rose-200">Une erreur est survenue</p>
+          <p class="mt-1 text-sm text-rose-700 dark:text-rose-300">{{ errorMessage() }}</p>
+        </div>
+      </div>
+    }
+
+    <!-- Empty list -->
+    @else if (tasks().length === 0) {
+      <div class="mt-6 flex flex-col items-center rounded-2xl border border-dashed border-slate-300 bg-white/70 px-6 py-16 text-center dark:border-slate-700 dark:bg-slate-900/70">
+        <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-900/[0.04] dark:bg-white/[0.06]">
+          <svg class="h-8 w-8 text-slate-400 dark:text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M9 5h6M9 5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2" />
+            <path d="m9.5 13 1.5 1.5 3-3.5" />
+          </svg>
+        </div>
+<<<<<<< Updated upstream
+        <h3 class="mt-5 text-lg font-medium text-slate-900">Aucune tâche pour le moment</h3>
+        <p class="mt-1.5 text-sm text-slate-500">Commencez par créer votre première tâche.</p>
+=======
+        @if (hasActiveFilters()) {
+          <h3 class="mt-5 text-lg font-medium text-slate-900 dark:text-slate-100">Aucune tâche trouvée</h3>
+          <p class="mt-1.5 text-sm text-slate-500 dark:text-slate-400">Aucune tâche ne correspond à votre recherche.</p>
+        }
+        @else {
+          <h3 class="mt-5 text-lg font-medium text-slate-900 dark:text-slate-100">Aucune tâche pour le moment</h3>
+          <p class="mt-1.5 text-sm text-slate-500 dark:text-slate-400">Commencez par créer votre première tâche.</p>
+        }
+>>>>>>> Stashed changes
+        <button
+          type="button"
+          class="mt-6 inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition duration-200 hover:-translate-y-px hover:border-slate-300 hover:bg-slate-50 hover:shadow dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 5v14M5 12h14" />
+          </svg>
+          Créer une tâche
+        </button>
+      </div>
+    }
+
+    <!-- Task list -->
+    @else {
+      <div class="mt-6 space-y-3">
+        @for (task of tasks(); track task.id) {
+          <article
+<<<<<<< Updated upstream
+            class="group rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md">
+=======
+            class="group relative rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md dark:border-slate-800 dark:bg-slate-900 dark:hover:border-slate-700">
+>>>>>>> Stashed changes
+
+            <div class="flex flex-col gap-4 sm:flex-row sm:items-center">
+
+              <!-- Priority accent -->
+              <span class="hidden h-10 w-1 shrink-0 rounded-full sm:block"
+                    [class]="priorityAccentClass(task.priority)"></span>
+
+              <!-- Title + description -->
+              <div class="flex min-w-0 flex-1 items-start gap-3">
+                <span class="mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full sm:hidden"
+                      [class]="priorityAccentClass(task.priority)"></span>
+                <div class="min-w-0">
+<<<<<<< Updated upstream
+                  <p class="truncate text-base font-medium text-slate-900 transition group-hover:text-slate-950">
+=======
+                  <a [routerLink]="['/tasks', task.id]"
+                     class="block truncate text-base font-medium text-slate-900 transition hover:underline group-hover:text-slate-950 dark:text-slate-100 dark:group-hover:text-slate-50">
+>>>>>>> Stashed changes
+                    {{ task.title }}
+                  </p>
+                  @if (task.description) {
+                    <p class="mt-1 line-clamp-1 text-sm text-slate-500 dark:text-slate-400">{{ task.description }}</p>
+                  }
+                </div>
+              </div>
+
+              <!-- Badges -->
+              <div class="flex flex-wrap items-center gap-2 sm:justify-end">
+                <span
+                  class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium"
+                  [class]="statusBadgeClass(task.status)">
+                  {{ statusLabel(task.status) }}
+                </span>
+                <span
+                  class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium"
+                  [class]="priorityBadgeClass(task.priority)">
+                  {{ priorityLabel(task.priority) }}
+                </span>
+              </div>
+
+<<<<<<< Updated upstream
+              <!-- Date -->
+              <div class="flex items-center justify-between gap-4 border-t border-slate-100 pt-3 sm:border-0 sm:pt-0">
+                <span class="shrink-0 text-xs tabular-nums text-slate-400">
+                  {{ task.createdAt | date: 'dd/MM/yyyy HH:mm' }}
+                </span>
+=======
+              <!-- Date + actions menu -->
+              <div class="flex shrink-0 items-center gap-2 border-t border-slate-100 pt-3 sm:border-0 sm:pt-0 dark:border-slate-800">
+                <span class="text-xs tabular-nums text-slate-400 dark:text-slate-500">
+                  {{ task.createdAt | date: 'dd/MM/yyyy HH:mm' }}
+                </span>
+
+                <button
+                  type="button"
+                  (click)="toggleMenu(task.id); $event.stopPropagation()"
+                  [attr.aria-expanded]="openMenuTaskId() === task.id"
+                  aria-label="Actions de la tâche"
+                  class="rounded-lg p-1.5 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200">
+                  <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <circle cx="5" cy="12" r="1.5" />
+                    <circle cx="12" cy="12" r="1.5" />
+                    <circle cx="19" cy="12" r="1.5" />
+                  </svg>
+                </button>
+
+                @if (openMenuTaskId() === task.id) {
+                  <div
+                    (click)="$event.stopPropagation()"
+                    class="absolute right-5 top-5 z-20 w-52 overflow-hidden rounded-xl border border-slate-200 bg-white py-1 shadow-lg dark:border-slate-700 dark:bg-slate-800">
+
+                    <button
+                      type="button"
+                      (click)="closeMenu(); openEditForm(task)"
+                      class="flex w-full items-center gap-2.5 px-4 py-2 text-left text-sm text-slate-700 transition hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-slate-700">
+                      <svg class="h-4 w-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                           stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M12 20h9" />
+                        <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
+                      </svg>
+                      Modifier la tâche
+                    </button>
+
+                    <button
+                      type="button"
+                      (click)="deleteTask(task); closeMenu()"
+                      class="flex w-full items-center gap-2.5 px-4 py-2 text-left text-sm text-rose-600 transition hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-950/50">
+                      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                           stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14" />
+                      </svg>
+                      Supprimer
+                    </button>
+                  </div>
+                }
+
+>>>>>>> Stashed changes
+              </div>
+
+            </div>
+          </article>
+        }
+      </div>
+    }
+
+  </div>
+</div>
