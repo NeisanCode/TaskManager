@@ -43,7 +43,7 @@
       rows="3"
       maxlength="500"
       placeholder="Détails de la tâche (optionnel)"
-      class="w-full resize-none rounded-xl border px-3 py-2 text-sm text-slate-900 transition placeholder:text-slate-400 focus:border-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-900"
+      class="w-full resize-none rounded-xl border px-3 py-2 text-sm text-slate-900 transition placeholder:text-slate-400 focus:border-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:border-slate-600 dark:focus:ring-slate-600"
       [class]="fieldBorderClass('description')"></textarea>
 
     @if (isInvalid('description') && form.get('description')?.hasError('maxlength')) {
@@ -95,14 +95,14 @@
     <button
       type="button"
       (click)="onCancel()"
-      class="rounded-xl border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-300 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800">
+      class="rounded-xl border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-300 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800">
       Annuler
     </button>
 
     <button
       type="submit"
       [disabled]="form.invalid || submitting()"
-      class="rounded-xl bg-slate-900 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-white dark:focus-visible:outline-slate-100">
+      class="rounded-xl bg-slate-900 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-slate-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-white dark:focus-visible:outline-slate-100">
       {{ submitting() ? 'Enregistrement...' : 'Enregistrer' }}
     </button>
   </div>

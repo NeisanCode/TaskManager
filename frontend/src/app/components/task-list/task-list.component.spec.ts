@@ -1,6 +1,7 @@
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 
 import { TaskListComponent } from './task-list.component';
 import { Task } from '../../models/task.model';
@@ -31,7 +32,7 @@ describe('TaskListComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [TaskListComponent],
-      providers: [provideHttpClient(), provideHttpClientTesting()],
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TaskListComponent);
@@ -42,7 +43,7 @@ describe('TaskListComponent', () => {
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('.animate-pulse')).toBeTruthy();
 
-    httpMock.expectOne('/api/tasks').flush(TASKS);
+    httpMock.expectOne(req => req.url === '/api/tasks').flush(TASKS);
     await fixture.whenStable();
     fixture.detectChanges();
 
@@ -60,7 +61,7 @@ describe('TaskListComponent', () => {
   it('affiche le message d’erreur si l’API échoue', async () => {
     fixture.detectChanges();
     httpMock
-      .expectOne('/api/tasks')
+      .expectOne(req => req.url === '/api/tasks')
       .flush('Erreur serveur', { status: 500, statusText: 'Server Error' });
     await fixture.whenStable();
     fixture.detectChanges();
@@ -71,13 +72,217 @@ describe('TaskListComponent', () => {
 
   it('affiche le message quand il n’y a aucune tâche', async () => {
     fixture.detectChanges();
-    httpMock.expectOne('/api/tasks').flush([]);
+    httpMock.expectOne(req => req.url === '/api/tasks').flush([]);
     await fixture.whenStable();
     fixture.detectChanges();
 
     expect(fixture.nativeElement.innerHTML).toContain('Aucune tâche pour le moment');
     expect(fixture.nativeElement.innerHTML).toContain('Commencez par créer votre première tâche.');
     httpMock.verify();
+  });
+
+  it('n’affiche pas les squelettes quand on change le statut', async () => {
+    fixture.detectChanges();
+    httpMock.expectOne(req => req.url === '/api/tasks').flush(TASKS);
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    fixture.componentInstance.cycleStatus(TASKS[0]);
+
+    // le rechargement ne doit pas remplacer la liste par des squelettes
+    expect(fixture.componentInstance.loading()).toBe(false);
+    expect(fixture.nativeElement.querySelector('.animate-pulse')).toBeFalsy();
+    expect(fixture.nativeElement.querySelectorAll('article').length).toBe(2);
+
+    httpMock.expectOne('/api/tasks/1').flush(TASKS[0]);
+    httpMock.expectOne('/api/tasks/1').flush(TASKS[0]);
+    httpMock.expectOne(req => req.url === '/api/tasks').flush(TASKS);
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelectorAll('article').length).toBe(2);
+    httpMock.verify();
+  });
+
+  it('envoie la recherche et le tri à l’API', async () => {
+    fixture.detectChanges();
+    httpMock.expectOne(req => req.url === '/api/tasks').flush(TASKS);
+    await fixture.whenStable();
+
+    fixture.componentInstance.onSearchChange('spring');
+    await fixture.whenStable();
+
+    const request = httpMock.expectOne(req => req.url === '/api/tasks');
+    expect(request.request.params.get('search')).toBe('spring');
+    expect(request.request.params.get('sortBy')).toBe('createdAt');
+    expect(request.request.params.get('sortDir')).toBe('desc');
+    expect(request.request.params.get('status')).toBeNull();
+    expect(request.request.params.get('priority')).toBeNull();
+
+    request.flush(TASKS);
+    await fixture.whenStable();
+    fixture.detectChanges();
+    httpMock.verify();
+  });
+
+  it('envoie le statut et la priorité sélectionnés', async () => {
+    fixture.detectChanges();
+    httpMock.expectOne(req => req.url === '/api/tasks').flush(TASKS);
+    await fixture.whenStable();
+
+    fixture.componentInstance.onStatusChange('DONE');
+    await fixture.whenStable();
+    httpMock.expectOne(req => req.url === '/api/tasks').flush(TASKS);
+    await fixture.whenStable();
+
+    fixture.componentInstance.onPriorityChange('HIGH');
+    await fixture.whenStable();
+
+    const request = httpMock.expectOne(req => req.url === '/api/tasks');
+    expect(request.request.params.get('status')).toBe('DONE');
+    expect(request.request.params.get('priority')).toBe('HIGH');
+
+    request.flush(TASKS);
+    await fixture.whenStable();
+    fixture.detectChanges();
+    httpMock.verify();
+  });
+
+  it('envoie le champ de tri et la direction', async () => {
+    fixture.detectChanges();
+    httpMock.expectOne(req => req.url === '/api/tasks').flush(TASKS);
+    await fixture.whenStable();
+
+    fixture.componentInstance.onSortFieldChange('title');
+    await fixture.whenStable();
+    httpMock.expectOne(req => req.url === '/api/tasks').flush(TASKS);
+    await fixture.whenStable();
+
+    fixture.componentInstance.toggleSortDirection();
+    await fixture.whenStable();
+
+    const request = httpMock.expectOne(req => req.url === '/api/tasks');
+    expect(request.request.params.get('sortBy')).toBe('title');
+    expect(request.request.params.get('sortDir')).toBe('asc');
+
+    request.flush(TASKS);
+    await fixture.whenStable();
+    fixture.detectChanges();
+    httpMock.verify();
+  });
+
+  it('remet tous les filtres à zéro', async () => {
+    fixture.detectChanges();
+    httpMock.expectOne(req => req.url === '/api/tasks').flush(TASKS);
+    await fixture.whenStable();
+
+    fixture.componentInstance.onSearchChange('x');
+    await fixture.whenStable();
+    httpMock.expectOne(req => req.url === '/api/tasks').flush(TASKS);
+    await fixture.whenStable();
+
+    fixture.componentInstance.onStatusChange('TODO');
+    await fixture.whenStable();
+    httpMock.expectOne(req => req.url === '/api/tasks').flush(TASKS);
+    await fixture.whenStable();
+
+    expect(fixture.componentInstance.hasActiveFilters()).toBe(true);
+
+    fixture.componentInstance.clearFilters();
+    await fixture.whenStable();
+
+    const request = httpMock.expectOne(req => req.url === '/api/tasks');
+    expect(request.request.params.get('search')).toBeNull();
+    expect(request.request.params.get('status')).toBeNull();
+
+    request.flush(TASKS);
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(fixture.componentInstance.hasActiveFilters()).toBe(false);
+    httpMock.verify();
+  });
+
+  it('calcule le statut suivant pour le bouton de cycle', () => {
+    const component = fixture.componentInstance;
+
+    expect(component.nextStatus('TODO')).toBe('IN_PROGRESS');
+    expect(component.nextStatus('IN_PROGRESS')).toBe('DONE');
+    expect(component.nextStatus('DONE')).toBe('TODO');
+  });
+
+  it('envoie un GET puis un PUT complet pour changer le statut', async () => {
+    fixture.detectChanges();
+    httpMock.expectOne(req => req.url === '/api/tasks').flush(TASKS);
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    fixture.componentInstance.cycleStatus(TASKS[0]);
+
+    const getRequest = httpMock.expectOne('/api/tasks/1');
+    expect(getRequest.request.method).toBe('GET');
+    getRequest.flush(TASKS[0]);
+
+    const putRequest = httpMock.expectOne('/api/tasks/1');
+    expect(putRequest.request.method).toBe('PUT');
+    expect(putRequest.request.body).toEqual({
+      title: 'Reviser Spring Boot',
+      description: 'Relire les bases JPA',
+      status: 'DONE',
+      priority: 'HIGH',
+    });
+
+    putRequest.flush({ ...TASKS[0], status: 'DONE' });
+    httpMock.expectOne(req => req.url === '/api/tasks').flush([{ ...TASKS[0], status: 'DONE' }]);
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(fixture.componentInstance.tasks().length).toBe(1);
+    httpMock.verify();
+  });
+
+  it('supprime la tâche après confirmation', async () => {
+    fixture.detectChanges();
+    httpMock.expectOne(req => req.url === '/api/tasks').flush(TASKS);
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
+    fixture.componentInstance.deleteTask(TASKS[0]);
+
+    const deleteRequest = httpMock.expectOne('/api/tasks/1');
+    expect(deleteRequest.request.method).toBe('DELETE');
+    deleteRequest.flush(null);
+
+    httpMock.expectOne(req => req.url === '/api/tasks').flush([TASKS[1]]);
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(fixture.componentInstance.tasks().length).toBe(1);
+    confirmSpy.mockRestore();
+    httpMock.verify();
+  });
+
+  it('ne supprime rien si la confirmation est refusée', () => {
+    fixture.detectChanges();
+    httpMock.expectOne(req => req.url === '/api/tasks').flush(TASKS);
+
+    const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(false);
+    fixture.componentInstance.deleteTask(TASKS[0]);
+
+    httpMock.expectNone('/api/tasks/1');
+    confirmSpy.mockRestore();
+  });
+
+  it('n’ouvre qu’un seul menu à la fois', () => {
+    fixture.componentInstance.toggleMenu(1);
+    expect(fixture.componentInstance.openMenuTaskId()).toBe(1);
+
+    fixture.componentInstance.toggleMenu(2);
+    expect(fixture.componentInstance.openMenuTaskId()).toBe(2);
+
+    fixture.componentInstance.toggleMenu(2);
+    expect(fixture.componentInstance.openMenuTaskId()).toBeNull();
   });
 
   it('traduit les statuts et priorités en français', () => {
