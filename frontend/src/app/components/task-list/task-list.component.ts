@@ -29,22 +29,25 @@ export class TaskListComponent implements OnInit {
   loading = signal(false);
   errorMessage = signal('');
 
-  showForm = signal(false);
-  selectedTask = signal<Task | null>(null);
-  openMenuTaskId = signal<number | null>(null);
-  loadedOnce = signal(false);
-
   searchText = signal('');
   statusFilter = signal<TaskStatus | null>(null);
   priorityFilter = signal<TaskPriority | null>(null);
   sortField = signal<TaskSortField>('createdAt');
   sortDirection = signal<TaskSortDirection>('desc');
 
+  showForm = signal(false);
+  selectedTask = signal<Task | null>(null);
+  openMenuTaskId = signal<number | null>(null);
+  loadedOnce = signal(false);
+
   ngOnInit(): void {
     this.loadTasks();
   }
 
   private loadTasks(): void {
+    // Skeletons only on the very first load. Showing them on every refresh
+    // would collapse the list and expand it again: visible layout jump.
+    this.loading.set(!this.loadedOnce());
     // Skeletons only on the very first load. Showing them on every refresh
     // would collapse the list and expand it again: visible layout jump.
     this.loading.set(!this.loadedOnce());

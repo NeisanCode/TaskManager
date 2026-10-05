@@ -254,7 +254,7 @@
       <div class="mt-6 space-y-3">
         @for (task of tasks(); track task.id) {
           <article
-            class="group relative rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md dark:border-slate-800 dark:bg-slate-900 dark:hover:border-slate-700">
+            class="group relative rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md">
 
             <div class="flex flex-col gap-4 sm:flex-row sm:items-center">
 
@@ -268,7 +268,7 @@
                       [class]="priorityAccentClass(task.priority)"></span>
                 <div class="min-w-0">
                   <a [routerLink]="['/tasks', task.id]"
-                     class="block truncate text-base font-medium text-slate-900 transition hover:underline group-hover:text-slate-950 dark:text-slate-100 dark:group-hover:text-slate-50">
+                     class="block truncate text-base font-medium text-slate-900 transition hover:underline group-hover:text-slate-950">
                     {{ task.title }}
                   </a>
                   @if (task.description) {
@@ -301,8 +301,8 @@
               </div>
 
               <!-- Date + actions menu -->
-              <div class="flex shrink-0 items-center gap-2 border-t border-slate-100 pt-3 sm:border-0 sm:pt-0 dark:border-slate-800">
-                <span class="text-xs tabular-nums text-slate-400 dark:text-slate-500">
+              <div class="flex shrink-0 items-center gap-2 border-t border-slate-100 pt-3 sm:border-0 sm:pt-0">
+                <span class="text-xs tabular-nums text-slate-400">
                   {{ task.createdAt | date: 'dd/MM/yyyy HH:mm' }}
                 </span>
 
@@ -311,7 +311,7 @@
                   (click)="toggleMenu(task.id); $event.stopPropagation()"
                   [attr.aria-expanded]="openMenuTaskId() === task.id"
                   aria-label="Actions de la tâche"
-                  class="rounded-lg p-1.5 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200">
+                  class="rounded-lg p-1.5 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-slate-400">
                   <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                     <circle cx="5" cy="12" r="1.5" />
                     <circle cx="12" cy="12" r="1.5" />
@@ -322,12 +322,12 @@
                 @if (openMenuTaskId() === task.id) {
                   <div
                     (click)="$event.stopPropagation()"
-                    class="absolute right-5 top-5 z-20 w-52 overflow-hidden rounded-xl border border-slate-200 bg-white py-1 shadow-lg dark:border-slate-700 dark:bg-slate-800">
+                    class="absolute right-5 top-5 z-20 w-52 overflow-hidden rounded-xl border border-slate-200 bg-white py-1 shadow-lg">
 
                     <button
                       type="button"
                       (click)="closeMenu(); openEditForm(task)"
-                      class="flex w-full items-center gap-2.5 px-4 py-2 text-left text-sm text-slate-700 transition hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-slate-700">
+                      class="flex w-full items-center gap-2.5 px-4 py-2 text-left text-sm text-slate-700 transition hover:bg-slate-50">
                       <svg class="h-4 w-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                            stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                         <path d="M12 20h9" />
@@ -339,7 +339,7 @@
                     <button
                       type="button"
                       (click)="deleteTask(task); closeMenu()"
-                      class="flex w-full items-center gap-2.5 px-4 py-2 text-left text-sm text-rose-600 transition hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-950/50">
+                      class="flex w-full items-center gap-2.5 px-4 py-2 text-left text-sm text-rose-600 transition hover:bg-rose-50">
                       <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                            stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                         <path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14" />
