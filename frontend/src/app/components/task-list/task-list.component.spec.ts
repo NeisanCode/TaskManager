@@ -110,6 +110,105 @@ describe('TaskListComponent', () => {
     httpMock.verify();
   });
 
+  it('envoie la recherche et le tri à l’API', async () => {
+    fixture.detectChanges();
+    httpMock.expectOne(req => req.url === '/api/tasks').flush(TASKS);
+    await fixture.whenStable();
+
+    fixture.componentInstance.onSearchChange('spring');
+    await fixture.whenStable();
+
+    const request = httpMock.expectOne(req => req.url === '/api/tasks');
+    expect(request.request.params.get('search')).toBe('spring');
+    expect(request.request.params.get('sortBy')).toBe('createdAt');
+    expect(request.request.params.get('sortDir')).toBe('desc');
+    expect(request.request.params.get('status')).toBeNull();
+    expect(request.request.params.get('priority')).toBeNull();
+
+    request.flush(TASKS);
+    await fixture.whenStable();
+    fixture.detectChanges();
+    httpMock.verify();
+  });
+
+  it('envoie le statut et la priorité sélectionnés', async () => {
+    fixture.detectChanges();
+    httpMock.expectOne(req => req.url === '/api/tasks').flush(TASKS);
+    await fixture.whenStable();
+
+    fixture.componentInstance.onStatusChange('DONE');
+    await fixture.whenStable();
+    httpMock.expectOne(req => req.url === '/api/tasks').flush(TASKS);
+    await fixture.whenStable();
+
+    fixture.componentInstance.onPriorityChange('HIGH');
+    await fixture.whenStable();
+
+    const request = httpMock.expectOne(req => req.url === '/api/tasks');
+    expect(request.request.params.get('status')).toBe('DONE');
+    expect(request.request.params.get('priority')).toBe('HIGH');
+
+    request.flush(TASKS);
+    await fixture.whenStable();
+    fixture.detectChanges();
+    httpMock.verify();
+  });
+
+  it('envoie le champ de tri et la direction', async () => {
+    fixture.detectChanges();
+    httpMock.expectOne(req => req.url === '/api/tasks').flush(TASKS);
+    await fixture.whenStable();
+
+    fixture.componentInstance.onSortFieldChange('title');
+    await fixture.whenStable();
+    httpMock.expectOne(req => req.url === '/api/tasks').flush(TASKS);
+    await fixture.whenStable();
+
+    fixture.componentInstance.toggleSortDirection();
+    await fixture.whenStable();
+
+    const request = httpMock.expectOne(req => req.url === '/api/tasks');
+    expect(request.request.params.get('sortBy')).toBe('title');
+    expect(request.request.params.get('sortDir')).toBe('asc');
+
+    request.flush(TASKS);
+    await fixture.whenStable();
+    fixture.detectChanges();
+    httpMock.verify();
+  });
+
+  it('remet tous les filtres à zéro', async () => {
+    fixture.detectChanges();
+    httpMock.expectOne(req => req.url === '/api/tasks').flush(TASKS);
+    await fixture.whenStable();
+
+    fixture.componentInstance.onSearchChange('x');
+    await fixture.whenStable();
+    httpMock.expectOne(req => req.url === '/api/tasks').flush(TASKS);
+    await fixture.whenStable();
+
+    fixture.componentInstance.onStatusChange('TODO');
+    await fixture.whenStable();
+    httpMock.expectOne(req => req.url === '/api/tasks').flush(TASKS);
+    await fixture.whenStable();
+
+    expect(fixture.componentInstance.hasActiveFilters()).toBe(true);
+
+    fixture.componentInstance.clearFilters();
+    await fixture.whenStable();
+
+    const request = httpMock.expectOne(req => req.url === '/api/tasks');
+    expect(request.request.params.get('search')).toBeNull();
+    expect(request.request.params.get('status')).toBeNull();
+
+    request.flush(TASKS);
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(fixture.componentInstance.hasActiveFilters()).toBe(false);
+    httpMock.verify();
+  });
+
   it('calcule le statut suivant pour le bouton de cycle', () => {
     const component = fixture.componentInstance;
 
