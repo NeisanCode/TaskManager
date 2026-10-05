@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.angular/
+.idea/
+*.iml
+Dockerfile
+.dockerignore
+# Only needed by `ng serve` locally: inside the container nginx does the proxying.
+proxy.conf.json

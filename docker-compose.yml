@@ -1,5 +1,6 @@
 services:
 
+  # ---------- PostgreSQL ----------
   db:
     image: postgres:17-alpine
     container_name: taskmanager-db
@@ -16,6 +17,37 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+    restart: unless-stopped
+
+  # ---------- Spring Boot API ----------
+  backend:
+    build: ./backend
+    container_name: taskmanager-backend
+    environment:
+      # Inside the network the database is reachable on its service name
+      # and on its internal port (5432), not on the host port 5433.
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: taskmanager
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # ---------- Angular app served by nginx ----------
+  frontend:
+    build: ./frontend
+    container_name: taskmanager-frontend
+    ports:
+      - "4200:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
 
 volumes:
   taskmanager-db-data:
